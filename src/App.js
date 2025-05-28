@@ -1,21 +1,17 @@
 import React, { useState } from "react";
-
 function App() {
   const [tasks, setTasks] = useState([]);
   const [input, setInput] = useState("");
-
   const addTask = () => {
     if (input.trim() !== "") {
       setTasks([...tasks, input]);
       setInput("");
     }
   };
-
   const removeTask = (index) => {
     const newTasks = tasks.filter((_, i) => i !== index);
     setTasks(newTasks);
   };
-
   return (
     <div style={{ padding: 20 }}>
       <h1>My To-Do List</h1>
