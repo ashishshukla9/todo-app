@@ -20,7 +20,7 @@ function App() {
         onChange={(e) => setInput(e.target.value)}
         placeholder="Enter task"
       />
-      {/* <button onClick={addTask}>Add</button> */}
+      <button onClick={addTask}>Add</button>
       <ul>
         {tasks.map((task, index) => (
           <li key={index}>
