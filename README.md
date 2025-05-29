@@ -1,70 +1,112 @@
-# Getting Started with Create React App
+Continuous Integration / Continuous Deployment ya Continuous Delivery
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+🚀 Complete Steps: React App + GitHub + CI/CD (GitHub Actions)
 
-## Available Scripts
+1. Create a New React App
+   npx create-react-app
 
-In the project directory, you can run:
+2. Initialize Git Repo & First Commit
 
-### `npm start`
+   git init
+   git add .
+   git commit -m "Initial commit"
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+3. Create GitHub Repo & Push Code
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  - GitHub pe jaake new repo banao (e.g. todo-app)
 
-### `npm run build`
+  - Fir terminal me run karo:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    git remote add origin https://github.com/<your-username>/todo-app.git
+    git branch -M main
+    git push -u origin main
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+4. Setup homepage in package.json
 
-### `npm run eject`
+   Open package.json and add:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+   "homepage": "https://<your-username>.github.io/todo-app"
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+5. Install gh-pages
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+   Then in package.json, scripts ko update karo:
 
-## Learn More
+   "scripts": {
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d build"
+   }
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+6. Create CI/CD Workflow
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+   Create folder & file:
 
-### Code Splitting
+   mkdir -p .github/workflows
+   touch .github/workflows/deploy.yml
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+   Aur deploy.yml me ye likho:
 
-### Analyzing the Bundle Size
+   name: Deploy React App to GitHub Pages
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+on:
+  push:
+    branches:
+      - main
 
-### Making a Progressive Web App
+permissions:
+  contents: write
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
 
-### Advanced Configuration
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-### Deployment
+      - name: Install dependencies
+        run: npm install
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+      - name: Build the React app
+        run: npm run build
 
-### `npm run build` fails to minify
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+7. Set GitHub Actions Permission
+   
+   Go to:
+
+   Repo → Settings → Actions → General
+   ➡️ Scroll to "Workflow permissions"
+   ✅ Select: Read and write permissions
+   ✅ (Optional but helpful) Enable: "Allow GitHub Actions to create and approve pull requests"
+
+   Click Save ✅
+
+8. Push Workflow to Trigger CI/CD
+
+   git add .
+   git commit -m "Add CI/CD workflow"
+   git push origin main
+
+9. Check CI/CD Run
+
+   Go to your repo on GitHub → Click Actions tab
+   ✅ Check:
+
+   Green tick on latest run
+
+   Step: Deploy to GitHub Pages → success
+
